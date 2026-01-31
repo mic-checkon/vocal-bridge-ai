@@ -12,11 +12,17 @@ export async function GET() {
     }
 
     try {
+        // Add browser-like headers to bypass Cloudflare bot detection
         const response = await fetch('https://vocalbridgeai.com/api/v1/token', {
             method: 'POST',
             headers: {
                 'X-API-Key': apiKey,
                 'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'application/json, text/plain, */*',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Origin': 'https://vocalbridgeai.com',
+                'Referer': 'https://vocalbridgeai.com/',
             },
             body: JSON.stringify({
                 participant_name: 'Executive User',

@@ -152,27 +152,11 @@ export function useVoiceAgent(onAction?: ActionHandler) {
         setState((s) => ({ ...s, isConnecting: true, error: null }));
 
         try {
-            // Direct client-side call
-            const apiKey = process.env.NEXT_PUBLIC_VOCAL_BRIDGE_API_KEY || process.env.VOCAL_BRIDGE_API_KEY;
-
-            if (!apiKey) throw new Error('API Key missing. Set NEXT_PUBLIC_VOCAL_BRIDGE_API_KEY');
-
-            const res = await fetch('https://vocalbridgeai.com/api/v1/token', {
-                method: 'POST',
-                headers: {
-                    'X-API-Key': apiKey,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    participant_name: 'Executive User',
-                }),
-            });
-
+            const res = await fetch('/api/voice-token');
             if (!res.ok) {
-                const errText = await res.text();
-                throw new Error(`API Error ${res.status}: ${errText}`);
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.details || 'Failed to get voice token');
             }
-
             const { livekit_url, token } = await res.json();
 
             await room.connect(livekit_url, token);

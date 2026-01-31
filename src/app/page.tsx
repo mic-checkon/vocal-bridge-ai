@@ -227,8 +227,7 @@ export default function Home() {
 
     // Apply filters to data
     const filteredData = useMemo(() => {
-        setIsLoading(true);
-        const result = allData.filter((record) => {
+        return allData.filter((record) => {
             if (filters.region && record.region !== filters.region) return false;
             if (filters.product && record.product !== filters.product) return false;
             if (filters.quarter && record.quarter !== filters.quarter) return false;
@@ -237,8 +236,13 @@ export default function Home() {
             if (filters.closeMonth && getMonthFromDate(record.closeDate) !== filters.closeMonth) return false;
             return true;
         });
-        setTimeout(() => setIsLoading(false), 100);
-        return result;
+    }, [filters]);
+
+    // Handle loading state
+    useEffect(() => {
+        setIsLoading(true);
+        const timer = setTimeout(() => setIsLoading(false), 300);
+        return () => clearTimeout(timer);
     }, [filters]);
 
     // Build context for agent
